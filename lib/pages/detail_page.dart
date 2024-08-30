@@ -96,7 +96,9 @@ class _DetailPageState extends State<DetailPage> {
                   ButtonComponent(
                     buttonLabel: 'Submit',
                     buttonColor: Colors.blueAccent,
-                    onPressed: () {},
+                    onPressed: () {
+                      addToMyPokemonList(nickname: nicknameController.text);
+                    },
                   ),
                   const SizedBox(
                     height: 5,
@@ -143,7 +145,25 @@ class _DetailPageState extends State<DetailPage> {
             description: addToMyPokemonResponse.message,
             imageLocation: '${AssetConstant.icon}success.png',
             actionWidget:
-                ButtonComponent(buttonLabel: 'Back To Home', onPressed: () {}),
+                ButtonComponent(buttonLabel: 'Back To Home', onPressed: () {
+                  Get.toNamed('/');
+                }),
+          ),
+        );
+      });
+    } else {
+      setState(() {
+        isLoading = false;
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialogComponent(
+            title: 'Failed',
+            description: addToMyPokemonResponse.message,
+            imageLocation: '${AssetConstant.icon}error.png',
+            actionWidget: ButtonComponent(
+                buttonLabel: 'Close',
+                buttonColor: Colors.redAccent,
+                onPressed: () => Get.back()),
           ),
         );
       });
@@ -152,7 +172,6 @@ class _DetailPageState extends State<DetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    print('nickname controller ${nicknameController.text}');
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(

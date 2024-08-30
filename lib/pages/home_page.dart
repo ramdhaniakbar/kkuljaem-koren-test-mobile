@@ -160,6 +160,16 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
+      bottomNavigationBar: BottomAppBar(
+        color: Colors.white,
+        notchMargin: 2.0, // Margin around the notch
+        child: IconButton(
+          icon: const Icon(Icons.my_library_add_rounded),
+          onPressed: () {
+            Get.toNamed('/my-pokemon-page');
+          },
+        ),
+      ),
     );
   }
 }

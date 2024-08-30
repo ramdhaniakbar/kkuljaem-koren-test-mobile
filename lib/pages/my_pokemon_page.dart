@@ -8,8 +8,10 @@ import 'package:kkuljaem_korean_mobile/helpers/format_helper.dart';
 import 'package:kkuljaem_korean_mobile/models/my_pokemon_model.dart';
 import 'package:kkuljaem_korean_mobile/models/response/my_pokemon_response.dart';
 import 'package:kkuljaem_korean_mobile/models/response/release_pokemon_response.dart';
+import 'package:kkuljaem_korean_mobile/models/response/rename_pokemon_response.dart';
 import 'package:kkuljaem_korean_mobile/services/my_pokemon_service.dart';
 import 'package:kkuljaem_korean_mobile/services/release_pokemon_service.dart';
+import 'package:kkuljaem_korean_mobile/services/rename_pokemon_service.dart';
 
 class MyPokemonPage extends StatefulWidget {
   const MyPokemonPage({super.key});
@@ -41,6 +43,10 @@ class _MyPokemonPageState extends State<MyPokemonPage> {
   }
 
   Future<void> releasePokemon({required String username}) async {
+    setState(() {
+      isLoading = true;
+    });
+
     ReleasePokemonResponse releasePokemonResponse =
         await ReleasePokemonService.releasePokemon(username: username);
 
@@ -59,7 +65,7 @@ class _MyPokemonPageState extends State<MyPokemonPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
+                    const Text(
                       'Number is Prime Number: ',
                       style: TextStyle(
                         fontSize: 16,
@@ -68,14 +74,14 @@ class _MyPokemonPageState extends State<MyPokemonPage> {
                     ),
                     Text(
                       releasePokemonResponse.data.number.toString(),
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 ButtonComponent(
@@ -105,7 +111,7 @@ class _MyPokemonPageState extends State<MyPokemonPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
+                    const Text(
                       'Number is not Prime Number: ',
                       style: TextStyle(
                         fontSize: 16,
@@ -114,14 +120,14 @@ class _MyPokemonPageState extends State<MyPokemonPage> {
                     ),
                     Text(
                       releasePokemonResponse.data.number.toString(),
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 ButtonComponent(
@@ -129,6 +135,62 @@ class _MyPokemonPageState extends State<MyPokemonPage> {
                     buttonColor: Colors.redAccent,
                     onPressed: () {
                       Get.back();
+                    })
+              ],
+            ),
+          ),
+        );
+      });
+    }
+  }
+
+  Future<void> renamePokemon({required String username}) async {
+    setState(() {
+      isLoading = true;
+    });
+
+    RenamePokemonResponse renamePokemonResponse = await RenamePokemonService.renamePokemonResponse(username: username);
+
+    if (renamePokemonResponse.status == 200) {
+      setState(() {
+        isLoading = false;
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialogComponent(
+            title: 'Success',
+            description: renamePokemonResponse.message,
+            imageLocation: '${AssetConstant.icon}success.png',
+            actionWidget: Column(
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Rename to fibonacci number: ',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Text(
+                      renamePokemonResponse.data.number_fibonacci.toString(),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                ButtonComponent(
+                    buttonLabel: 'Close',
+                    buttonColor: Colors.blueAccent,
+                    onPressed: () {
+                      Get.back();
+                      getMyPokemon();
                     })
               ],
             ),
@@ -180,17 +242,17 @@ class _MyPokemonPageState extends State<MyPokemonPage> {
                                   borderRadius: BorderRadius.circular(10),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Color(0xFF000000).withOpacity(0.1),
+                                      color: const Color(0xFF000000).withOpacity(0.1),
                                       spreadRadius: 0,
                                       blurRadius: 20,
-                                      offset: Offset(0, 4),
+                                      offset: const Offset(0, 4),
                                     )
                                   ]),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Image.network(
-                                    "https://img.pokemondb.net/artwork/${e.name}.jpg",
+                                    e.image!,
                                     width: 60,
                                     height: 60,
                                   ),
@@ -211,7 +273,7 @@ class _MyPokemonPageState extends State<MyPokemonPage> {
                                                   fontSize: 18.0,
                                                   fontWeight: FontWeight.w500),
                                             ),
-                                            Text(' - '),
+                                            const Text(' - '),
                                             Text(
                                               e.username!,
                                               style: const TextStyle(
@@ -221,7 +283,7 @@ class _MyPokemonPageState extends State<MyPokemonPage> {
                                             )
                                           ],
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           height: 10.0,
                                         ),
                                         Column(
@@ -245,7 +307,7 @@ class _MyPokemonPageState extends State<MyPokemonPage> {
                                                       BorderRadius.circular(10),
                                                 ),
                                               ),
-                                              child: Row(
+                                              child: const Row(
                                                 mainAxisSize: MainAxisSize.min,
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.center,
@@ -283,13 +345,47 @@ class _MyPokemonPageState extends State<MyPokemonPage> {
                                                       BorderRadius.circular(10),
                                                 ),
                                               ),
-                                              child: Row(
+                                              child: const Row(
                                                 mainAxisSize: MainAxisSize.min,
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.center,
                                                 children: [
                                                   Text(
                                                     'Release Pokemon',
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.w700,
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 10.0,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                renamePokemon(
+                                                    username: e.username!);
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                padding: const EdgeInsets.only(
+                                                    left: 15, right: 8),
+                                                backgroundColor:
+                                                    Colors.amber,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                ),
+                                              ),
+                                              child: const Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    'Rename Pokemon',
                                                     style: TextStyle(
                                                       color: Colors.white,
                                                       fontWeight:
@@ -321,7 +417,7 @@ class _MyPokemonPageState extends State<MyPokemonPage> {
         color: Colors.white,
         notchMargin: 2.0, // Margin around the notch
         child: IconButton(
-          icon: Icon(Icons.my_library_add_rounded),
+          icon: const Icon(Icons.my_library_add_rounded),
           onPressed: () {},
         ),
       ),

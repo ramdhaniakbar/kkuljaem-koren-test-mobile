@@ -82,10 +82,10 @@ class _HomePageState extends State<HomePage> {
                             borderRadius: BorderRadius.circular(10),
                             boxShadow: [
                               BoxShadow(
-                                color: Color(0xFF000000).withOpacity(0.1),
+                                color: const Color(0xFF000000).withOpacity(0.1),
                                 spreadRadius: 0,
                                 blurRadius: 20,
-                                offset: Offset(0, 4),
+                                offset: const Offset(0, 4),
                               )
                             ]),
                         child: Row(
@@ -109,7 +109,7 @@ class _HomePageState extends State<HomePage> {
                                         fontSize: 18.0,
                                         fontWeight: FontWeight.w500),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 10.0,
                                   ),
                                   ElevatedButton(
@@ -125,7 +125,7 @@ class _HomePageState extends State<HomePage> {
                                         borderRadius: BorderRadius.circular(10),
                                       ),
                                     ),
-                                    child: Row(
+                                    child: const Row(
                                       mainAxisSize: MainAxisSize.min,
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,

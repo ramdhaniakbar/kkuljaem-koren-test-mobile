@@ -11,7 +11,7 @@ class PokemonListService {
     try {
       final url =
           Uri.https(Environment.pokeApiURL, "api/v2/pokemon", {
-            "limit": "10",
+            "limit": "50",
             "offset": offset
           });
 

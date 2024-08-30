@@ -252,7 +252,7 @@ class _DetailPageState extends State<DetailPage> {
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                               ),
-                              child: Row(
+                              child: const Row(
                                 mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
@@ -268,21 +268,21 @@ class _DetailPageState extends State<DetailPage> {
                             )
                           ],
                         ),
-                        Divider(),
+                        const Divider(),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
+                                  const Text(
                                     'Types Skills: ',
                                     style: TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 5,
                                   ),
                                   ...pokemonDetail.types.map((type) {
@@ -291,25 +291,25 @@ class _DetailPageState extends State<DetailPage> {
                                           vertical: 4.0),
                                       child: Text(
                                         FormatHelper.toCapitalize(type.name),
-                                        style: TextStyle(fontSize: 14),
+                                        style: const TextStyle(fontSize: 14),
                                       ),
                                     );
                                   }),
                                 ]),
-                            SizedBox(
+                            const SizedBox(
                               width: 15,
                             ),
                             Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
+                                  const Text(
                                     'Moves Skills: ',
                                     style: TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 5,
                                   ),
                                   ...pokemonDetail.moves.map((move) {
@@ -318,7 +318,7 @@ class _DetailPageState extends State<DetailPage> {
                                           vertical: 4.0),
                                       child: Text(
                                         FormatHelper.toCapitalize(move.name),
-                                        style: TextStyle(fontSize: 14),
+                                        style: const TextStyle(fontSize: 14),
                                       ),
                                     );
                                   }),

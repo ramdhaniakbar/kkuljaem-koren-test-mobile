@@ -3,7 +3,6 @@ import 'package:get/route_manager.dart';
 import 'package:kkuljaem_korean_mobile/helpers/format_helper.dart';
 import 'package:kkuljaem_korean_mobile/models/pokemon_list_model.dart';
 import 'package:kkuljaem_korean_mobile/models/response/pokemon_list_response.dart';
-import 'package:kkuljaem_korean_mobile/pages/detail_page.dart';
 import 'package:kkuljaem_korean_mobile/services/pokemon_list_service.dart';
 
 class HomePage extends StatefulWidget {

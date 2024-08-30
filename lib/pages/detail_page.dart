@@ -2,9 +2,15 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
+import 'package:kkuljaem_korean_mobile/components/alert_dialog_component.dart';
+import 'package:kkuljaem_korean_mobile/components/button_component.dart';
+import 'package:kkuljaem_korean_mobile/components/text_field_component.dart';
+import 'package:kkuljaem_korean_mobile/constants/asset_constant.dart';
 import 'package:kkuljaem_korean_mobile/helpers/format_helper.dart';
 import 'package:kkuljaem_korean_mobile/models/pokemon_detail_model.dart';
+import 'package:kkuljaem_korean_mobile/models/response/catch_pokemon_response.dart';
 import 'package:kkuljaem_korean_mobile/models/response/pokemon_detail_response.dart';
+import 'package:kkuljaem_korean_mobile/services/catch_pokemon_service.dart';
 import 'package:kkuljaem_korean_mobile/services/pokemon_detail_service.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
@@ -19,6 +25,8 @@ class _DetailPageState extends State<DetailPage> {
   String name = Get.arguments['name'] ?? '';
   late PokemonDetailModel pokemonDetail;
   bool isLoading = true;
+
+  final TextEditingController nicknameController = TextEditingController();
 
   @override
   void initState() {
@@ -39,8 +47,86 @@ class _DetailPageState extends State<DetailPage> {
     });
   }
 
+  Future<void> catchPokemon() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    CatchPokemonResponse catchPokemonResponse =
+        await CatchPokemonService.catchPokemon();
+
+    if (catchPokemonResponse.data.is_success == true) {
+      setState(() {
+        isLoading = false;
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialogComponent(
+              title: 'Success',
+              description: catchPokemonResponse.message,
+              imageLocation: '${AssetConstant.icon}success.png',
+              actionWidget: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Give a nickname',
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 5.0,
+                  ),
+                  TextFieldComponent(
+                    controller: nicknameController,
+                    hintText: 'Input a nickname',
+                    textInputType: TextInputType.text,
+                    obscure: false,
+                    shadow: false,
+                    onChanged: (value) {
+                      setState(() {});
+                    },
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  ButtonComponent(
+                    buttonLabel: 'Submit',
+                    buttonColor: Colors.blueAccent,
+                    onPressed: () {
+
+                    },
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                ],
+              )),
+        );
+      });
+    } else {
+      setState(() {
+        isLoading = false;
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialogComponent(
+            title: 'Failed',
+            description: catchPokemonResponse.message,
+            imageLocation: '${AssetConstant.icon}error.png',
+            actionWidget: ButtonComponent(
+                buttonLabel: 'Close',
+                buttonColor: Colors.redAccent,
+                onPressed: () => Get.back()),
+          ),
+        );
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    print('nickname controller ${nicknameController.text}');
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
@@ -76,7 +162,7 @@ class _DetailPageState extends State<DetailPage> {
                           color: const Color(0xFF000000).withOpacity(0.1),
                           spreadRadius: 0,
                           blurRadius: 20,
-                          offset: Offset(0, 4),
+                          offset: const Offset(0, 4),
                         )
                       ],
                     ),
@@ -84,22 +170,52 @@ class _DetailPageState extends State<DetailPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Image.network(
-                              "https://img.pokemondb.net/artwork/${pokemonDetail.name}.jpg",
-                              width: 60,
-                              height: 60,
-                            ),
-                            const SizedBox(
-                              width: 20.0,
-                            ),
-                            Expanded(
-                              child: Text(
-                                FormatHelper.toCapitalize(pokemonDetail.name!),
-                                style: TextStyle(
-                                  fontSize: 18.0,
-                                  fontWeight: FontWeight.w500,
+                            Row(
+                              children: [
+                                Image.network(
+                                  "https://img.pokemondb.net/artwork/${pokemonDetail.name}.jpg",
+                                  width: 60,
+                                  height: 60,
                                 ),
+                                const SizedBox(
+                                  width: 20.0,
+                                ),
+                                Text(
+                                  FormatHelper.toCapitalize(
+                                      pokemonDetail.name!),
+                                  style: const TextStyle(
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                )
+                              ],
+                            ),
+                            ElevatedButton(
+                              onPressed: () async {
+                                await catchPokemon();
+                              },
+                              style: ElevatedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 15.0),
+                                backgroundColor: const Color(0xFF56C2D9),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'Catch Pokemon',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ],
                               ),
                             )
                           ],

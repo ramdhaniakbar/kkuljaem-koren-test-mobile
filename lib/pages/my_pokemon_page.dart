@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/route_manager.dart';
+import 'package:kkuljaem_korean_mobile/components/alert_dialog_component.dart';
+import 'package:kkuljaem_korean_mobile/components/button_component.dart';
+import 'package:kkuljaem_korean_mobile/constants/asset_constant.dart';
 import 'package:kkuljaem_korean_mobile/helpers/format_helper.dart';
 import 'package:kkuljaem_korean_mobile/models/my_pokemon_model.dart';
 import 'package:kkuljaem_korean_mobile/models/response/my_pokemon_response.dart';
+import 'package:kkuljaem_korean_mobile/models/response/release_pokemon_response.dart';
 import 'package:kkuljaem_korean_mobile/services/my_pokemon_service.dart';
+import 'package:kkuljaem_korean_mobile/services/release_pokemon_service.dart';
 
 class MyPokemonPage extends StatefulWidget {
   const MyPokemonPage({super.key});
@@ -33,6 +38,104 @@ class _MyPokemonPageState extends State<MyPokemonPage> {
         pokemonList = myPokemonResponse.data;
       }
     });
+  }
+
+  Future<void> releasePokemon({required String username}) async {
+    ReleasePokemonResponse releasePokemonResponse =
+        await ReleasePokemonService.releasePokemon(username: username);
+
+    if (releasePokemonResponse.data.is_prime_number == true) {
+      setState(() {
+        isLoading = false;
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialogComponent(
+            title: 'Success',
+            description: releasePokemonResponse.message,
+            imageLocation: '${AssetConstant.icon}success.png',
+            actionWidget: Column(
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Number is Prime Number: ',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Text(
+                      releasePokemonResponse.data.number.toString(),
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                ButtonComponent(
+                    buttonLabel: 'Close',
+                    buttonColor: Colors.blueAccent,
+                    onPressed: () {
+                      Get.back();
+                      getMyPokemon();
+                    })
+              ],
+            ),
+          ),
+        );
+      });
+    } else {
+      setState(() {
+        isLoading = false;
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialogComponent(
+            title: 'Failed',
+            description: releasePokemonResponse.message,
+            imageLocation: '${AssetConstant.icon}error.png',
+            actionWidget: Column(
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Number is not Prime Number: ',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Text(
+                      releasePokemonResponse.data.number.toString(),
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                ButtonComponent(
+                    buttonLabel: 'Close',
+                    buttonColor: Colors.redAccent,
+                    onPressed: () {
+                      Get.back();
+                    })
+              ],
+            ),
+          ),
+        );
+      });
+    }
   }
 
   @override
@@ -99,52 +202,108 @@ class _MyPokemonPageState extends State<MyPokemonPage> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          FormatHelper.toCapitalize(e.name!),
-                                          style: const TextStyle(
-                                              fontSize: 18.0,
-                                              fontWeight: FontWeight.w500),
+                                        Row(
+                                          children: [
+                                            Text(
+                                              FormatHelper.toCapitalize(
+                                                  e.name!),
+                                              style: const TextStyle(
+                                                  fontSize: 18.0,
+                                                  fontWeight: FontWeight.w500),
+                                            ),
+                                            Text(' - '),
+                                            Text(
+                                              e.username!,
+                                              style: const TextStyle(
+                                                fontSize: 18.0,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            )
+                                          ],
                                         ),
                                         SizedBox(
                                           height: 10.0,
                                         ),
-                                        ElevatedButton(
-                                          onPressed: () {
-                                            Get.toNamed('/detail-page',
-                                                arguments: {"name": e.name});
-                                          },
-                                          style: ElevatedButton.styleFrom(
-                                            padding: const EdgeInsets.only(
-                                                left: 15, right: 8),
-                                            backgroundColor:
-                                                const Color(0xFF56C2D9),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                            ),
-                                          ),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                'Detail Page',
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.w700,
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                Get.toNamed('/detail-page',
+                                                    arguments: {
+                                                      "name": e.name
+                                                    });
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                padding: const EdgeInsets.only(
+                                                    left: 15, right: 8),
+                                                backgroundColor:
+                                                    const Color(0xFF56C2D9),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
                                                 ),
                                               ),
-                                              SizedBox(
-                                                width: 10.0,
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    'Detail Page',
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.w700,
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 10.0,
+                                                  ),
+                                                  Icon(
+                                                    Icons.arrow_right_rounded,
+                                                    color: Colors.white,
+                                                  )
+                                                ],
                                               ),
-                                              Icon(
-                                                Icons.arrow_right_rounded,
-                                                color: Colors.white,
-                                              )
-                                            ],
-                                          ),
-                                        )
+                                            ),
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                releasePokemon(
+                                                    username: e.username!);
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                padding: const EdgeInsets.only(
+                                                    left: 15, right: 8),
+                                                backgroundColor:
+                                                    Colors.redAccent,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                ),
+                                              ),
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    'Release Pokemon',
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.w700,
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 10.0,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ],
                                     ),
                                   )

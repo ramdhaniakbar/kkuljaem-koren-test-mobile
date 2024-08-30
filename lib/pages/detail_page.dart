@@ -129,6 +129,7 @@ class _DetailPageState extends State<DetailPage> {
   Future<void> addToMyPokemonList({required String nickname}) async {
     setState(() {
       isLoading = true;
+      Get.back();
     });
 
     AddToMyPokemonResponse addToMyPokemonResponse =
@@ -144,9 +145,11 @@ class _DetailPageState extends State<DetailPage> {
             title: 'Success',
             description: addToMyPokemonResponse.message,
             imageLocation: '${AssetConstant.icon}success.png',
-            actionWidget:
-                ButtonComponent(buttonLabel: 'Back To Home', onPressed: () {
-                  Get.toNamed('/');
+            actionWidget: ButtonComponent(
+                buttonLabel: 'To My Pokemon',
+                buttonColor: Colors.blueAccent,
+                onPressed: () {
+                  Get.toNamed('/my-pokemon-page');
                 }),
           ),
         );

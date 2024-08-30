@@ -8,8 +8,10 @@ import 'package:kkuljaem_korean_mobile/components/text_field_component.dart';
 import 'package:kkuljaem_korean_mobile/constants/asset_constant.dart';
 import 'package:kkuljaem_korean_mobile/helpers/format_helper.dart';
 import 'package:kkuljaem_korean_mobile/models/pokemon_detail_model.dart';
+import 'package:kkuljaem_korean_mobile/models/response/add_to_my_pokemon_response.dart';
 import 'package:kkuljaem_korean_mobile/models/response/catch_pokemon_response.dart';
 import 'package:kkuljaem_korean_mobile/models/response/pokemon_detail_response.dart';
+import 'package:kkuljaem_korean_mobile/services/add_to_my_pokemon_service.dart';
 import 'package:kkuljaem_korean_mobile/services/catch_pokemon_service.dart';
 import 'package:kkuljaem_korean_mobile/services/pokemon_detail_service.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -94,9 +96,7 @@ class _DetailPageState extends State<DetailPage> {
                   ButtonComponent(
                     buttonLabel: 'Submit',
                     buttonColor: Colors.blueAccent,
-                    onPressed: () {
-
-                    },
+                    onPressed: () {},
                   ),
                   const SizedBox(
                     height: 5,
@@ -118,6 +118,32 @@ class _DetailPageState extends State<DetailPage> {
                 buttonLabel: 'Close',
                 buttonColor: Colors.redAccent,
                 onPressed: () => Get.back()),
+          ),
+        );
+      });
+    }
+  }
+
+  Future<void> addToMyPokemonList({required String nickname}) async {
+    setState(() {
+      isLoading = true;
+    });
+
+    AddToMyPokemonResponse addToMyPokemonResponse =
+        await AddToMyPokemonService.addToMyPokemon(
+            name: name, nickname: nickname);
+
+    if (addToMyPokemonResponse.status == 201) {
+      setState(() {
+        isLoading = false;
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialogComponent(
+            title: 'Success',
+            description: addToMyPokemonResponse.message,
+            imageLocation: '${AssetConstant.icon}success.png',
+            actionWidget:
+                ButtonComponent(buttonLabel: 'Back To Home', onPressed: () {}),
           ),
         );
       });
